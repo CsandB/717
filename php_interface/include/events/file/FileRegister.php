@@ -2,9 +2,14 @@
 
 namespace Local\File;
 
+use Bitrix\Main\ArgumentException;
 use Bitrix\Main\Loader;
 use Bitrix\Main\LoaderException;
 use Bitrix\Main\Localization\Loc;
+use Bitrix\Main\ObjectPropertyException;
+use Bitrix\Main\SystemException;
+use Exception;
+use Local\ExternalFileTable;
 
 
 /**
@@ -53,6 +58,46 @@ class FileRegister
 
 
         return false;
+    }
+
+    /**
+     *
+     */
+    public function setEntity(): void
+    {
+        $parts = explode('/',
+            trim(SERVENTITY_DEBUGBACKTRACE_REFLECTIONCLASSVAR, '/'));
+        foreach (self::$thatentities as $i => $item) {
+            if (empty($item)) {
+                continue;
+            }
+            $key = array_search($item, $parts);
+            if ($key !== false) {
+                self::$entity = $item;
+                self::$entity_id = $item == 'group' ? $parts[$key + 1]
+                    : $parts[$key + 2];
+                break;
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    public function setModule(): void
+    {
+        $parts = explode('/',
+            trim(SERVENTITY_DEBUGBACKTRACE_REFLECTIONCLASSVAR, '/'));
+        foreach (self::$thatmodules as $i => $item) {
+            if (empty($item)) {
+                continue;
+            }
+            $key = array_search($item, $parts);
+            if ($key !== false) {
+                self::$module = $item;
+                break;
+            }
+        }
     }
 
     /**
@@ -105,42 +150,38 @@ class FileRegister
     }
 
     /**
+     * Adds record.
      *
+     * @param array $fields
+     *
+     * @return int|bool return entity id or false.
+     * @throws Exception
      */
-    public function setEntity(): void
+    public static function add(array $fields)
     {
-        $parts = explode('/',
-            trim(SERVENTITY_DEBUGBACKTRACE_REFLECTIONCLASSVAR, '/'));
-        foreach (self::$thatentities as $i => $item) {
-            if (empty($item)) {
-                continue;
-            }
-            $key = array_search($item, $parts);
-            if ($key !== false) {
-                self::$entity = $item;
-                self::$entity_id = $item == 'group' ? $parts[$key + 1]
-                    : $parts[$key + 2];
-                break;
-            }
+        $result = ExternalFileTable::add($fields);
+        if ($result->isSuccess()) {
+            return $result->getId();
+        } else {
+            // $this->result->addErrors($result->getErrors());
+            return false;
         }
     }
 
     /**
+     * Returns record fields.
      *
+     * @param int $fileId
+     *
+     * @return array $fields
+     * @throws ArgumentException
+     * @throws ObjectPropertyException
+     * @throws SystemException
      */
-    public function setModule(): void
+    public static function getFields($fileId)
     {
-        $parts = explode('/',
-            trim(SERVENTITY_DEBUGBACKTRACE_REFLECTIONCLASSVAR, '/'));
-        foreach (self::$thatmodules as $i => $item) {
-            if (empty($item)) {
-                continue;
-            }
-            $key = array_search($item, $parts);
-            if ($key !== false) {
-                self::$module = $item;
-                break;
-            }
-        }
+        $queryObject = ExternalFileTable::getById($fileId);
+
+        return (($fields = $queryObject->fetch()) ? $fields : []);
     }
 }
