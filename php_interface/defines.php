@@ -6,7 +6,7 @@ use Bitrix\Main\Application;
 define('LOG_FILENAME', Application::getDocumentRoot().'/log.txt');
 
 // Для разработки
-define('SERVENTITY_DEBUGBACKTRACE_REFLECTIONCLASSVAR', '');
+//define('SERVENTITY_DEBUGBACKTRACE_REFLECTIONCLASSVAR', '');
 
 // Подразделения
 define('DEPARTMENT_DIRECTORATE', 1);            // Дирекция

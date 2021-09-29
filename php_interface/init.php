@@ -13,6 +13,19 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php')) {
 /* Регистрируем обработчики событий */
 $eventManager = EventManager::getInstance();
 
+$eventManager->addEventHandler('main',
+    'OnBeforeEndBufferContent', [
+        'Local\MainEvent',
+        'OnBeforeEndBufferContent',
+    ]);
+
+$eventManager->addEventHandler('main',
+    'OnFileSave', [
+        'Local\File\FileRegister',
+        'onFileSaveCustom',
+    ]);
+
+
 //file
 if (file_exists($_SERVER["DOCUMENT_ROOT"]
     .'/local/php_interface/include/events/file/handler.php')
