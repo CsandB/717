@@ -43,21 +43,34 @@ class FileRegister
      *
      * @return bool
      */
-    public static function onFileSaveCustom(
+    public static function onOnAfterFileSaveCustom(
         &$arFile,
-        $strFileName,
-        $strSavePath,
+        $strFileName = '',
+        $strSavePath = '',
         $bForceMD5 = false,
         $bSkipExt = false,
         $dirAdd = ""
     ) {
 
-        $var = SERVENTITY_DEBUGBACKTRACE_REFLECTIONCLASSVAR;
+
         self::setEntity();
         self::setModule();
 
 
-        return false;
+        $fields = [
+            'B_FILE_ID' => (int)$arFile['ID'],
+            'MODULE_ID' => self::$module_id,
+            'ENTITY_ID' => self::$entity_id,
+            'MODULE'    => self::$module,
+            'ENTITY'    => self::$entity,
+            'COMMENTS'  => htmlspecialcharsback(
+                self::JSEscape(
+                    SERVENTITY_DEBUGBACKTRACE_REFLECTIONCLASSVAR
+                )),
+        ];
+
+        return self::add($fields);
+
     }
 
     /**
@@ -166,6 +179,37 @@ class FileRegister
             // $this->result->addErrors($result->getErrors());
             return false;
         }
+    }
+
+    public static function JSEscape($s)
+    {
+        static $aSearch = array(
+            "\xe2\x80\xa9",
+            "\\",
+            "'",
+            "\"",
+            "\r\n",
+            "\r",
+            "\n",
+            "\xe2\x80\xa8",
+            "*/",
+            "</",
+        );
+        static $aReplace = array(
+            " ",
+            "\\\\",
+            "\\'",
+            '\\"',
+            "\n",
+            "\n",
+            "\\n",
+            "\\n",
+            "*\\/",
+            "<\\/",
+        );
+        $val = str_replace($aSearch, $aReplace, $s);
+
+        return $val;
     }
 
     /**
