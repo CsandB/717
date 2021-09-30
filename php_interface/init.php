@@ -20,9 +20,9 @@ $eventManager->addEventHandler('main',
     ]);
 
 $eventManager->addEventHandler('main',
-    'OnFileSave', [
+    'OnAfterFileSave', [
         'Local\File\FileRegister',
-        'onFileSaveCustom',
+        'onOnAfterFileSaveCustom',
     ]);
 
 

@@ -113,6 +113,56 @@ class FileRegister
         }
     }
 
+    public static function JSEscape($s)
+    {
+        static $aSearch = array(
+            "\xe2\x80\xa9",
+            "\\",
+            "'",
+            "\"",
+            "\r\n",
+            "\r",
+            "\n",
+            "\xe2\x80\xa8",
+            "*/",
+            "</",
+        );
+        static $aReplace = array(
+            " ",
+            "\\\\",
+            "\\'",
+            '\\"',
+            "\n",
+            "\n",
+            "\\n",
+            "\\n",
+            "*\\/",
+            "<\\/",
+        );
+        $val = str_replace($aSearch, $aReplace, $s);
+
+        return $val;
+    }
+
+    /**
+     * Adds record.
+     *
+     * @param array $fields
+     *
+     * @return int|bool return entity id or false.
+     * @throws Exception
+     */
+    public static function add(array $fields)
+    {
+        $result = ExternalFileTable::add($fields);
+        if ($result->isSuccess()) {
+            return $result->getId();
+        } else {
+            // $this->result->addErrors($result->getErrors());
+            return false;
+        }
+    }
+
     /**
      * Событие OnFileSave
      *
@@ -160,56 +210,6 @@ class FileRegister
         }
 
         return false;
-    }
-
-    /**
-     * Adds record.
-     *
-     * @param array $fields
-     *
-     * @return int|bool return entity id or false.
-     * @throws Exception
-     */
-    public static function add(array $fields)
-    {
-        $result = ExternalFileTable::add($fields);
-        if ($result->isSuccess()) {
-            return $result->getId();
-        } else {
-            // $this->result->addErrors($result->getErrors());
-            return false;
-        }
-    }
-
-    public static function JSEscape($s)
-    {
-        static $aSearch = array(
-            "\xe2\x80\xa9",
-            "\\",
-            "'",
-            "\"",
-            "\r\n",
-            "\r",
-            "\n",
-            "\xe2\x80\xa8",
-            "*/",
-            "</",
-        );
-        static $aReplace = array(
-            " ",
-            "\\\\",
-            "\\'",
-            '\\"',
-            "\n",
-            "\n",
-            "\\n",
-            "\\n",
-            "*\\/",
-            "<\\/",
-        );
-        $val = str_replace($aSearch, $aReplace, $s);
-
-        return $val;
     }
 
     /**
