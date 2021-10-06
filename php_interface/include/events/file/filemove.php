@@ -2,7 +2,7 @@
 
 namespace Local\File;
 
-use Bitrix\Crm\Activity\Provider\Call;
+
 use Bitrix\Main\Loader;
 use Bitrix\Main\LoaderException;
 use Bitrix\Main\Localization\Loc;
@@ -13,7 +13,7 @@ use Bitrix\Main\Localization\Loc;
  *
  * @package Local\File
  */
-class FileMove extends Call
+class FileMove
 {
     const ACTIVITY_PROVIDER_ID = 'DEAL_CALL';
 }

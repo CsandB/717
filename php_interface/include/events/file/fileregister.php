@@ -231,21 +231,14 @@ class FileRegister
 
     /**
      * Returns $Array with instead values by key.
-     *
-     * @param array  $Array
-     * @param string $Find
-     * @param string $Replace
-     *
-     * @return array $Array
-     * @throws ArgumentException
-     * @throws SystemException
      */
     public static function arrayReplace($Array, $Find, $Replace)
     {
         if (is_array($Array)) {
             foreach ($Array as $Key => $Val) {
                 if (is_array($Array[$Key])) {
-                    $Array[$Key] = ArrayReplace($Array[$Key], $Find, $Replace);
+                    $Array[$Key] = self::arrayReplace($Array[$Key], $Find,
+                        $Replace);
                 } else {
                     if ($Key === $Find) {
                         $Array[$Key] = $Replace;
